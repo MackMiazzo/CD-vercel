@@ -1,1 +1,111 @@
-<h1> Ola mundo </h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bolas de Gude Pulando - Pedro</title>
+<style>
+  /* Fundo e texto centralizado */
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    color: #222;
+    position: relative;
+  }
+
+  /* Texto grande no fundo */
+  .background-text {
+    position: absolute;
+    font-size: 10vw;
+    font-weight: bold;
+    color: #222;
+    user-select: none;
+    z-index: 0;
+  }
+
+  /* Container para as bolas de gude */
+  .marbles-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none; /* para não atrapalhar seleção do texto */
+  }
+
+  /* Cada bola de gude */
+  .marble {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #56ccf2, #2f80ed);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    animation-name: bounce;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  /* Animação de pulo */
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-100px);
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="background-text">Pedro</div>
+
+<div class="marbles-container" id="marbles-container">
+  <!-- Bolas serão adicionadas via JavaScript -->
+</div>
+
+<script>
+  const container = document.getElementById('marbles-container');
+  const numMarbles = 15; // número de bolas
+  const colors = [
+    '#56ccf2', '#2f80ed', '#f2994a', '#eb5757', '#27ae60', '#9b51e0'
+  ];
+
+  for (let i = 0; i < numMarbles; i++) {
+    const marble = document.createElement('div');
+    marble.classList.add('marble');
+    
+    // tamanho aleatório entre 15px e 30px
+    const size = 15 + Math.random() * 15;
+    marble.style.width = size + 'px';
+    marble.style.height = size + 'px';
+
+    // posição horizontal aleatória dentro da tela
+    const posX = Math.random() * (window.innerWidth - size);
+    marble.style.left = posX + 'px';
+
+    // posição vertical inicial, fica no "chão" (mais próximo da base)
+    const groundY = window.innerHeight - size - 20;
+    marble.style.top = groundY + 'px';
+
+    // cor aleatória
+    marble.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+    // tempo da animação (duração)
+    const duration = 1 + Math.random() * 1.5; // 1s a 2.5s
+    marble.style.animationDuration = duration + 's';
+
+    // atraso para que não pulem sincronizados
+    marble.style.animationDelay = (Math.random() * duration) + 's';
+
+    container.appendChild(marble);
+  }
+</script>
+
+</body>
+</html>
