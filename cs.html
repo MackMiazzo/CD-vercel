@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mini CS Emulado</title>
+<style>
+  body, html {
+    margin: 0; padding: 0;
+    width: 100vw; height: 100vh;
+    background: #444;
+    overflow: hidden;
+    font-family: 'Arial Black', Arial, sans-serif;
+    user-select: none;
+  }
+
+  /* Área do jogo */
+  #game-area {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background:
+      linear-gradient(to bottom, #c2b280 0%, #968c6c 100%);
+    overflow: hidden;
+  }
+
+  /* Piso simples para o chão */
+  #floor {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    background: repeating-linear-gradient(
+      45deg,
+      #6b6b6b,
+      #6b6b6b 10px,
+      #555 10px,
+      #555 20px
+    );
+  }
+
+  /* Player */
+  #player {
+    position: absolute;
+    bottom: 100px;
+    left: 50px;
+    width: 40px;
+    height: 80px;
+    background: #0055aa;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  /* Head do player */
+  #player::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    width: 40px;
+    height: 20px;
+    background: #003366;
+    border-radius: 50% / 100%;
+  }
+
+  /* Canhão (arma) */
+  #gun {
+    position: relative;
+    width: 30px;
+    height: 10px;
+    background: #222;
+    border-radius: 3px;
+    margin-bottom: 8px;
+  }
+
+  /* Inimigo */
+  #enemy {
+    position: absolute;
+    bottom: 100px;
+    right: 80px;
+    width: 40px;
+    height: 80px;
+    background: #aa0000;
+    border-radius: 10px;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  #enemy::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    width: 40px;
+    height: 20px;
+    background: #660000;
+    border-radius: 50% / 100%;
+  }
+
+  /* Vida e munição HUD */
+  #hud {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    user-select: none;
+    background: rgba(0,0,0,0.6);
+    padding: 10px 20px;
+    border-radius: 12px;
+    width: 220px;
+    box-sizing: border-box;
+  }
+
+  /* Botão de atirar */
+  #shoot-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #cc0000;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 0 10px #cc0000;
+    transition: background 0.3s ease;
+  }
+
+  #shoot-btn:active {
+    background: #990000;
+    box-shadow: 0 0 20px #ff0000;
+  }
+
+  /* Efeito tiro */
+  #shot-effect {
+    position: absolute;
+    width: 15px;
+    height: 5px;
+    background: yellow;
+    border-radius: 3px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease-out;
+    z-index: 20;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="game-area">
+  <div id="floor"></div>
+  <div id="player">
+    <div id="gun"></div>
+  </div>
+  <div id="enemy"></div>
+  <div id="shot-effect"></div>
+</div>
+
+<div id="hud">
+  Vida: <span id="player-health">100</span><br />
+  Munição: <span id="player-ammo">10</span>
+</div>
+
+<button id="shoot-btn">Atirar</button>
+
+<script>
+  const player = document.getElementById('player');
+  const enemy = document.getElementById('enemy');
+  const shotEffect = document.getElementById('shot-effect');
+  const healthDisplay = document.getElementById('player-health');
+  const ammoDisplay = document.getElementById('player-ammo');
+  const shootBtn = document.getElementById('shoot-btn');
+
+  let playerHealth = 100;
+  let playerAmmo = 10;
+
+  // Player position
+  let playerPos = {
+    x: 50,
+    y: window.innerHeight - 180 // bottom 100 + height 80
+  };
+
+  // Movement parameters
+  const moveSpeed = 10;
+  const maxX = window.innerWidth - player.offsetWidth;
+  const minX = 0;
+
+  // Atualiza posição do player no DOM
+  function updatePlayerPosition() {
+    player.style.left = playerPos.x + 'px';
+  }
+
+  // Detecta se inimigo está "alcançável" para tiro (simples checagem horizontal)
+  function isEnemyInRange() {
+    const playerRect = player.getBoundingClientRect();
+    const enemyRect = enemy.getBoundingClientRect();
+
+    // Simplificado: se inimigo estiver até 300px à frente (à direita do player)
+    return enemyRect.left > playerRect.right && enemyRect.left - playerRect.right < 300;
+  }
+
+  // Função de atirar
+  function shoot() {
+    if(playerAmmo <= 0) {
+      alert("Sem munição! Recarregue.");
+      return;
+    }
+
+    playerAmmo--;
+    ammoDisplay.textContent = playerAmmo;
+
+    // Mostrar efeito de tiro na frente do player (na ponta da arma)
+    const playerRect = player.getBoundingClientRect();
+    shotEffect.style.top = (playerRect.top + playerRect.height / 2 - 2.5) + 'px';
+    shotEffect.style.left = (playerRect.right + 10) + 'px';
+    shotEffect.style.opacity = '1';
+
+    setTimeout(() => {
+      shotEffect.style.opacity = '0';
+    }, 150);
+
+    // Se inimigo estiver no alcance, sofre dano
+    if(isEnemyInRange()) {
+      enemyHealth -= 20;
+      updateEnemyHealth();
+
+      if(enemyHealth <= 0) {
+        alert("Inimigo derrotado! Você venceu!");
+        resetGame();
+      }
+    }
+  }
+
+  // Movimento do player
+  window.addEventListener('keydown', e => {
+    switch(e.key.toLowerCase()) {
+      case 'arrowleft':
+      case 'a':
+        playerPos.x = Math.max(minX, playerPos.x - moveSpeed);
+        updatePlayerPosition();
+        break;
+      case 'arrowright':
+      case 'd':
+        playerPos.x = Math.min(maxX, playerPos.x + moveSpeed);
+        updatePlayerPosition();
+        break;
+    }
+  });
+
+  shootBtn.addEventListener('click', shoot);
+
+  // Health inimigo simples
+  let enemyHealth = 100;
+
+  // Atualiza a cor do inimigo conforme a vida
+  function updateEnemyHealth() {
+    if(enemyHealth <= 0) {
+      enemy.style.backgroundColor = '#555';
+      enemy.style.pointerEvents = 'none';
+    } else if(enemyHealth < 50) {
+      enemy.style.backgroundColor = '#aa3333';
+    } else {
+      enemy.style.backgroundColor = '#aa0000';
+    }
+  }
+
+  updateEnemyHealth();
+
+  // Reset do jogo
+  function resetGame() {
+    enemyHealth = 100;
+    playerHealth = 100;
+    playerAmmo = 10;
+    healthDisplay.textContent = playerHealth;
+    ammoDisplay.textContent = playerAmmo;
+    updateEnemyHealth();
+    playerPos.x = 50;
+    updatePlayerPosition();
+  }
+
+  // Inicializa player na posição correta
+  updatePlayerPosition();
+</script>
+
+</body>
+</html>
