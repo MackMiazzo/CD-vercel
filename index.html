@@ -3,108 +3,210 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Bolas de Gude Pulando - Pedro</title>
+<title>Dragão cuspindo fogo - Pedro</title>
 <style>
-  /* Fundo e texto centralizado */
   body, html {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    overflow: hidden;
+    margin: 0; padding: 0; height: 100vh; display: flex;
+    justify-content: center; align-items: center;
     background: #111;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, sans-serif;
-    color: #222;
+    overflow: hidden;
+    font-family: 'Arial Black', Arial, sans-serif;
+  }
+
+  .container {
     position: relative;
+    width: 400px;
+    height: 250px;
   }
 
-  /* Texto grande no fundo */
-  .background-text {
+  /* Dragão simplificado: corpo, cabeça, olho */
+  .dragon {
     position: absolute;
-    font-size: 10vw;
-    font-weight: bold;
-    color: #222;
-    user-select: none;
-    z-index: 0;
+    bottom: 20px;
+    left: 50px;
+    width: 150px;
+    height: 120px;
   }
 
-  /* Container para as bolas de gude */
-  .marbles-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
-    pointer-events: none; /* para não atrapalhar seleção do texto */
-  }
-
-  /* Cada bola de gude */
-  .marble {
+  /* Corpo do dragão (um retângulo verde) */
+  .body {
     position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 150px;
+    height: 80px;
+    background: linear-gradient(90deg, #2e8b57, #006400);
+    border-radius: 50px 50px 20px 20px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Cabeça: círculo verde */
+  .head {
+    position: absolute;
+    bottom: 70px;
+    left: 120px;
+    width: 60px;
+    height: 60px;
+    background: #2e8b57;
     border-radius: 50%;
-    background: linear-gradient(135deg, #56ccf2, #2f80ed);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    animation-name: bounce;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
+    box-shadow: inset -5px 0 10px #145214;
   }
 
-  /* Animação de pulo */
-  @keyframes bounce {
-    0%, 100% {
-      transform: translateY(0);
+  /* Olho branco */
+  .eye {
+    position: absolute;
+    top: 15px;
+    left: 40px;
+    width: 15px;
+    height: 15px;
+    background: white;
+    border-radius: 50%;
+  }
+
+  /* Pupila preta */
+  .pupil {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 7px;
+    height: 7px;
+    background: black;
+    border-radius: 50%;
+  }
+
+  /* Fogo */
+  .fire {
+    position: absolute;
+    bottom: 90px;
+    left: 170px;
+    width: 30px;
+    height: 60px;
+    opacity: 0;
+    transform-origin: bottom center;
+    animation: fire-breath 3s forwards;
+    filter: drop-shadow(0 0 6px orange);
+  }
+
+  /* Chamas com formas simples */
+  .flame {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 20px;
+    height: 40px;
+    background: radial-gradient(circle at 50% 80%, yellow, orange 60%, red);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    transform: translateX(-50%);
+    animation: flicker 1.5s infinite alternate;
+  }
+
+  .flame:nth-child(2) {
+    left: 30%;
+    width: 15px;
+    height: 30px;
+    animation-delay: 0.2s;
+  }
+  .flame:nth-child(3) {
+    left: 70%;
+    width: 15px;
+    height: 35px;
+    animation-delay: 0.4s;
+  }
+
+  /* Animação de cuspir fogo */
+  @keyframes fire-breath {
+    0% {
+      opacity: 0;
+      transform: scaleY(0.3);
     }
-    50% {
-      transform: translateY(-100px);
+    30% {
+      opacity: 1;
+      transform: scaleY(1.2);
+    }
+    70% {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scaleY(0.3);
     }
   }
+
+  /* Flicker da chama */
+  @keyframes flicker {
+    0% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 1; }
+    100% { transform: translateX(-50%) scaleY(1.2) scaleX(0.8); opacity: 0.8; }
+  }
+
+  /* Nome Pedro aparecendo depois do fogo */
+  .name {
+    position: absolute;
+    bottom: 20px;
+    right: 50px;
+    font-size: 4rem;
+    font-weight: bold;
+    color: #f05454;
+    opacity: 0;
+    text-shadow: 0 0 10px #f05454;
+    animation: name-appear 2s forwards;
+    animation-delay: 3.2s;
+  }
+
+  @keyframes name-appear {
+    to {
+      opacity: 1;
+      text-shadow: 0 0 20px #f05454, 0 0 40px #ff0000;
+    }
+  }
+
 </style>
 </head>
 <body>
 
-<div class="background-text">Pedro</div>
+<div class="container">
+  <div class="dragon">
+    <div class="body"></div>
+    <div class="head">
+      <div class="eye">
+        <div class="pupil"></div>
+      </div>
+    </div>
+  </div>
 
-<div class="marbles-container" id="marbles-container">
-  <!-- Bolas serão adicionadas via JavaScript -->
+  <div class="fire">
+    <div class="flame"></div>
+    <div class="flame"></div>
+    <div class="flame"></div>
+  </div>
+
+  <div class="name">Pedro</div>
 </div>
 
 <script>
-  const container = document.getElementById('marbles-container');
-  const numMarbles = 15; // número de bolas
-  const colors = [
-    '#56ccf2', '#2f80ed', '#f2994a', '#eb5757', '#27ae60', '#9b51e0'
-  ];
+  // Repetir cuspir fogo a cada 5 segundos
+  const fire = document.querySelector('.fire');
+  const name = document.querySelector('.name');
 
-  for (let i = 0; i < numMarbles; i++) {
-    const marble = document.createElement('div');
-    marble.classList.add('marble');
-    
-    // tamanho aleatório entre 15px e 30px
-    const size = 15 + Math.random() * 15;
-    marble.style.width = size + 'px';
-    marble.style.height = size + 'px';
+  function breatheFire() {
+    fire.style.animation = 'none';
+    name.style.opacity = '0';
 
-    // posição horizontal aleatória dentro da tela
-    const posX = Math.random() * (window.innerWidth - size);
-    marble.style.left = posX + 'px';
+    // Forçar reinício da animação
+    void fire.offsetWidth;
 
-    // posição vertical inicial, fica no "chão" (mais próximo da base)
-    const groundY = window.innerHeight - size - 20;
-    marble.style.top = groundY + 'px';
+    fire.style.animation = 'fire-breath 3s forwards';
 
-    // cor aleatória
-    marble.style.background = colors[Math.floor(Math.random() * colors.length)];
-
-    // tempo da animação (duração)
-    const duration = 1 + Math.random() * 1.5; // 1s a 2.5s
-    marble.style.animationDuration = duration + 's';
-
-    // atraso para que não pulem sincronizados
-    marble.style.animationDelay = (Math.random() * duration) + 's';
-
-    container.appendChild(marble);
+    // Aparece o nome após a animação do fogo
+    setTimeout(() => {
+      name.style.animation = 'none';
+      void name.offsetWidth;
+      name.style.animation = 'name-appear 2s forwards';
+    }, 3200);
   }
+
+  breatheFire();
+  setInterval(breatheFire, 5000);
 </script>
 
 </body>
