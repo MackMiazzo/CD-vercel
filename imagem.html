@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Imagem do Esqueleto</title>
+<style>
+  /* Fundo preto */
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: #000;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  /* Container do fogo */
+  .fire-container {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  /* Labareda de fogo animada */
+  .flame {
+    position: absolute;
+    bottom: 0;
+    width: 30px;
+    height: 80px;
+    background: radial-gradient(ellipse at center, #ff4000 0%, #ff8000 60%, transparent 90%);
+    filter: drop-shadow(0 0 8px #ff6600);
+    border-radius: 50% 50% 30% 30% / 100% 100% 70% 70%;
+    animation: flicker 1.5s infinite alternate ease-in-out;
+    opacity: 0.8;
+  }
+
+  /* Diferentes tamanhos e delays para labaredas */
+  .flame:nth-child(1) {
+    left: 10%;
+    animation-duration: 1.2s;
+    animation-delay: 0s;
+    height: 90px;
+    width: 25px;
+  }
+  .flame:nth-child(2) {
+    left: 25%;
+    animation-duration: 1.7s;
+    animation-delay: 0.3s;
+    height: 70px;
+    width: 30px;
+  }
+  .flame:nth-child(3) {
+    left: 40%;
+    animation-duration: 1.4s;
+    animation-delay: 0.6s;
+    height: 85px;
+    width: 28px;
+  }
+  .flame:nth-child(4) {
+    left: 60%;
+    animation-duration: 1.6s;
+    animation-delay: 0.2s;
+    height: 75px;
+    width: 30px;
+  }
+  .flame:nth-child(5) {
+    left: 80%;
+    animation-duration: 1.3s;
+    animation-delay: 0.5s;
+    height: 80px;
+    width: 26px;
+  }
+
+  @keyframes flicker {
+    0% {
+      transform: scaleY(1) translateY(0);
+      opacity: 0.9;
+      filter: drop-shadow(0 0 8px #ff6600);
+    }
+    100% {
+      transform: scaleY(1.2) translateY(-10px);
+      opacity: 0.6;
+      filter: drop-shadow(0 0 12px #ff3300);
+    }
+  }
+
+  /* GIF do esqueleto */
+  #skeleton-gif {
+    position: relative;
+    max-width: 400px;
+    max-height: 400px;
+    z-index: 2;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="fire-container">
+  <div class="flame"></div>
+  <div class="flame"></div>
+  <div class="flame"></div>
+  <div class="flame"></div>
+  <div class="flame"></div>
+</div>
+
+<img
+  id="skeleton-gif"
+  src="https://images.steamusercontent.com/ugc/2480808807594637252/11119ACEA65BD9BE6A94AC9DEA436C0805BC2566/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false"
+  alt="Esqueleto animado"
+/>
+
+</body>
+</html>
