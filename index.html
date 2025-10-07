@@ -3,311 +3,240 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Fundo do Mar - Pedro</title>
+<title>Fundo do Mar com Pedro</title>
 <style>
-  /* Fundo do mar */
   body, html {
     margin: 0;
     padding: 0;
     overflow: hidden;
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(to bottom, #004466 0%, #001f33 100%);
-    position: relative;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #004466, #001f33);
+    font-family: Arial, sans-serif;
+    color: white;
   }
 
-  /* Container para os peixes */
-  #fish-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* Peixes não interferem em clique */
-    overflow: visible;
-  }
-
-  /* Peixe básico (simples forma SVG inline) */
+  /* Peixes */
   .fish {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 60px;
-    height: 30px;
+    background: orange;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
     opacity: 0.8;
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
-    will-change: transform;
+    animation-timing-function: linear;
   }
 
-  /* Nome Pedro flutuante */
+  /* Variações de tamanho */
+  .small {
+    width: 30px;
+    height: 15px;
+  }
+
+  .medium {
+    width: 50px;
+    height: 25px;
+  }
+
+  .large {
+    width: 70px;
+    height: 35px;
+  }
+
+  /* Animação para os peixes nadarem da direita para esquerda */
+  @keyframes swim {
+    0% {
+      transform: translateX(100vw);
+    }
+    100% {
+      transform: translateX(-100vw);
+    }
+  }
+
+  /* Nome Pedro flutuando */
   #pedro {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 4rem;
-    color: #a0e9ff;
+    font-size: 48px;
     font-weight: bold;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
     user-select: none;
-    text-shadow:
-      0 0 5px #a0e9ff,
-      0 0 10px #3ec6ff,
-      0 0 20px #0d94ff;
-    pointer-events: none;
   }
 
-  /* Caixa de mensagem (formulário) */
+  /* Caixa de mensagem central */
   #message-box {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(0,0,50,0.8);
     padding: 25px 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    border-radius: 15px;
+    box-shadow: 0 0 15px #00ffff;
+    z-index: 100;
     width: 320px;
-    z-index: 10;
-    pointer-events: auto; /* habilitar interação */
   }
 
   #message-box h2 {
     margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.5rem;
-    color: #004466;
     text-align: center;
+    color: #00ffff;
   }
 
   #message-box textarea {
     width: 100%;
     height: 100px;
-    resize: none;
     border-radius: 8px;
-    border: 1px solid #004466;
+    border: none;
     padding: 10px;
-    font-size: 1rem;
-    font-family: inherit;
-    margin-bottom: 15px;
-    box-sizing: border-box;
+    font-size: 16px;
+    resize: none;
   }
 
-  #message-box button[type="submit"] {
+  #message-box button {
+    margin-top: 12px;
     width: 100%;
     padding: 12px;
-    background-color: #007acc;
+    background: #00cccc;
     border: none;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: bold;
     border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #001f33;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background 0.3s;
+  }
+  #message-box button:hover {
+    background: #00ffff;
   }
 
-  #message-box button[type="submit"]:hover {
-    background-color: #005fa3;
+  /* Botões de redirecionamento */
+  .redirect-btn {
+    position: fixed;
+    bottom: 20px;
+    padding: 12px 20px;
+    font-size: 16px;
+    background: #007acc;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 8px #007acc;
+    user-select: none;
+    z-index: 9999;
   }
 
   #btn-imagem {
-    margin-top: 10px;
-    background-color: #28a745;
-    border: none;
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    width: 100%;
-    transition: background-color 0.3s ease;
+    right: 20px;
   }
-
-  #btn-imagem:hover {
-    background-color: #1e7e34;
+  #btn-cs {
+    right: 140px;
   }
 
   /* Mensagem de sucesso */
   #success-message {
     display: none;
-    text-align: center;
-    color: #006600;
     margin-top: 10px;
-    font-weight: bold;
+    color: #0f0;
+    text-align: center;
   }
-
 </style>
 </head>
 <body>
 
-<div id="fish-container"></div>
+<!-- Peixes gerados via JS -->
+
 <div id="pedro">Pedro</div>
 
-<!-- Formulário para enviar mensagem -->
 <div id="message-box">
   <h2>Mande uma mensagem ao Pedro</h2>
-  <form id="contact-form" method="POST" action="https://formspree.io/f/movknwne">
+  <form id="contact-form" action="https://formspree.io/f/movknwne" method="POST">
     <textarea name="message" placeholder="Escreva sua mensagem aqui..." required></textarea>
     <button type="submit">Enviar</button>
+    <div id="success-message">Mensagem enviada com sucesso!</div>
   </form>
-  <div id="success-message">Mensagem enviada com sucesso!</div>
-
-  <button id="btn-imagem" type="button">Ver Imagem</button>
 </div>
 
+<button id="btn-imagem" class="redirect-btn">Ir para Imagem</button>
+<button id="btn-cs" class="redirect-btn">Ir para CS</button>
+
 <script>
-  const fishContainer = document.getElementById('fish-container');
-  const screenWidth = window.innerWidth;
-  const screenHeight = window.innerHeight;
-
-  // SVG de peixe simples para usar no innerHTML
-  const fishSVG = `
-  <svg viewBox="0 0 64 32" xmlns="http://www.w3.org/2000/svg" >
-    <g>
-      <ellipse cx="32" cy="16" rx="25" ry="15" fill="#ff8c00" />
-      <polygon points="0,16 15,5 15,27" fill="#e67300" />
-      <circle cx="45" cy="12" r="5" fill="#fff"/>
-      <circle cx="45" cy="12" r="2" fill="#000"/>
-    </g>
-  </svg>`;
-
-  const fishCount = 20; // número de peixes
+  // Gerar peixes aleatórios e animar
+  const fishCount = 15;
+  const fishSizes = ['small', 'medium', 'large'];
+  const colors = ['#FFA500', '#FF4500', '#FFD700', '#FF6347'];
 
   function random(min, max) {
     return Math.random() * (max - min) + min;
   }
 
-  // Criar peixes
-  for(let i = 0; i < fishCount; i++) {
+  for(let i=0; i < fishCount; i++) {
     const fish = document.createElement('div');
     fish.classList.add('fish');
-    fish.innerHTML = fishSVG;
 
-    // tamanho aleatório entre 30 e 80 px de largura
-    const size = random(30, 80);
-    fish.style.width = size + 'px';
-    fish.style.height = (size/2) + 'px';
+    // Tamanho aleatório
+    fish.classList.add(fishSizes[Math.floor(Math.random() * fishSizes.length)]);
 
-    // posição vertical aleatória na tela
-    fish.style.top = random(0, screenHeight - size/2) + 'px';
+    // Cor aleatória
+    fish.style.background = colors[Math.floor(Math.random() * colors.length)];
 
-    // posição inicial horizontal (fora da tela esquerda ou direita)
-    const startLeft = Math.random() < 0.5 ? -size : screenWidth + size;
-    fish.style.left = startLeft + 'px';
+    // Posição vertical aleatória
+    fish.style.top = random(10, window.innerHeight - 100) + 'px';
 
-    // direção (se começar à esquerda vai para direita, se começar direita vai esquerda)
-    fish.dataset.direction = startLeft < 0 ? 'right' : 'left';
+    // Tempo de animação aleatório
+    fish.style.animation = `swim ${random(8, 20)}s linear infinite`;
 
-    // velocidade entre 20 e 60 segundos para atravessar a tela
-    fish.dataset.speed = random(20000, 60000);
+    // Delay para espalhar
+    fish.style.animationDelay = (random(0, 20)) + 's';
 
-    fishContainer.appendChild(fish);
+    // Adicionar ao body
+    document.body.appendChild(fish);
   }
 
-  // Animar peixes usando requestAnimationFrame
-  let lastTimestamp = null;
-
-  function animate(timestamp) {
-    if (!lastTimestamp) lastTimestamp = timestamp;
-    const delta = timestamp - lastTimestamp;
-    lastTimestamp = timestamp;
-
-    const fishes = document.querySelectorAll('.fish');
-    fishes.forEach(fish => {
-      let left = parseFloat(fish.style.left);
-      const direction = fish.dataset.direction;
-      const speed = parseFloat(fish.dataset.speed); // tempo para atravessar a tela
-
-      // px por ms: largura da tela + peixe / velocidade em ms
-      const distance = screenWidth + fish.offsetWidth;
-      const pxPerMs = distance / speed;
-      const move = pxPerMs * delta;
-
-      if(direction === 'right') {
-        left += move;
-        if(left > screenWidth + fish.offsetWidth) {
-          // Resetar para começar do lado esquerdo
-          left = -fish.offsetWidth;
-          fish.style.top = random(0, screenHeight - fish.offsetHeight) + 'px';
-          fish.dataset.speed = random(20000, 60000);
-        }
-      } else {
-        left -= move;
-        if(left < -fish.offsetWidth) {
-          // Resetar para começar do lado direito
-          left = screenWidth + fish.offsetWidth;
-          fish.style.top = random(0, screenHeight - fish.offsetHeight) + 'px';
-          fish.dataset.speed = random(20000, 60000);
-        }
-      }
-
-      fish.style.left = left + 'px';
-
-      // Virar horizontalmente o peixe se necessário
-      fish.style.transform = direction === 'right' ? 'scaleX(1)' : 'scaleX(-1)';
-    });
-
-    // Animar o nome Pedro flutuando suavemente
-    animatePedro(timestamp);
-
-    requestAnimationFrame(animate);
-  }
-
-  // Para flutuar o nome "Pedro" suavemente
+  // Animar o texto Pedro flutuando
   const pedro = document.getElementById('pedro');
-  let pedroBaseX = screenWidth / 2;
-  let pedroBaseY = screenHeight / 2;
-  let pedroOffsetX = 0;
-  let pedroOffsetY = 0;
-  let pedroAngle = 0;
-
-  function animatePedro(timestamp) {
-    pedroAngle += 0.005;
-    pedroOffsetX = Math.sin(pedroAngle) * 30; // +/-30px horizontal
-    pedroOffsetY = Math.cos(pedroAngle * 1.2) * 20; // +/-20px vertical
-
-    pedro.style.left = (pedroBaseX + pedroOffsetX) + 'px';
-    pedro.style.top = (pedroBaseY + pedroOffsetY) + 'px';
+  let angle = 0;
+  function animatePedro() {
+    angle += 0.02;
+    pedro.style.left = (window.innerWidth / 2 + Math.sin(angle) * 150) + 'px';
+    pedro.style.top = (window.innerHeight / 3 + Math.cos(angle * 1.5) * 30) + 'px';
+    requestAnimationFrame(animatePedro);
   }
+  animatePedro();
 
-  requestAnimationFrame(animate);
-
-  // Atualizar variáveis se a janela for redimensionada
-  window.addEventListener('resize', () => {
-    pedroBaseX = window.innerWidth / 2;
-    pedroBaseY = window.innerHeight / 2;
-  });
-
-  // Lógica para enviar formulário usando Formspree
+  // Formspree - enviar mensagem
   const form = document.getElementById('contact-form');
   const successMessage = document.getElementById('success-message');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const formData = new FormData(form);
 
     try {
       const response = await fetch(form.action, {
         method: form.method,
         body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
+        headers: { 'Accept': 'application/json' }
       });
 
       if (response.ok) {
         successMessage.style.display = 'block';
         form.reset();
+        setTimeout(() => { successMessage.style.display = 'none'; }, 4000);
       } else {
         alert('Erro ao enviar mensagem. Tente novamente mais tarde.');
       }
-    } catch (error) {
+    } catch {
       alert('Erro ao enviar mensagem. Tente novamente mais tarde.');
     }
   });
 
-  // Redirecionar para imagem.html ao clicar no botão
+  // Botão para imagem.html
   document.getElementById('btn-imagem').addEventListener('click', () => {
     window.location.href = 'imagem.html';
+  });
+
+  // Botão para cs.html
+  document.getElementById('btn-cs').addEventListener('click', () => {
+    window.location.href = 'cs.html';
   });
 </script>
 
