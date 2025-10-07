@@ -3,210 +3,186 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Dragão cuspindo fogo - Pedro</title>
+<title>Fundo do Mar - Pedro</title>
 <style>
+  /* Fundo do mar */
   body, html {
-    margin: 0; padding: 0; height: 100vh; display: flex;
-    justify-content: center; align-items: center;
-    background: #111;
+    margin: 0;
+    padding: 0;
     overflow: hidden;
-    font-family: 'Arial Black', Arial, sans-serif;
-  }
-
-  .container {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(to bottom, #004466 0%, #001f33 100%);
     position: relative;
-    width: 400px;
-    height: 250px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 
-  /* Dragão simplificado: corpo, cabeça, olho */
-  .dragon {
+  /* Container para os peixes */
+  #fish-container {
     position: absolute;
-    bottom: 20px;
-    left: 50px;
-    width: 150px;
-    height: 120px;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Peixes não interferem em clique */
+    overflow: visible;
   }
 
-  /* Corpo do dragão (um retângulo verde) */
-  .body {
+  /* Peixe básico (simples forma SVG inline) */
+  .fish {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
-    width: 150px;
-    height: 80px;
-    background: linear-gradient(90deg, #2e8b57, #006400);
-    border-radius: 50px 50px 20px 20px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.7);
-  }
-
-  /* Cabeça: círculo verde */
-  .head {
-    position: absolute;
-    bottom: 70px;
-    left: 120px;
     width: 60px;
-    height: 60px;
-    background: #2e8b57;
-    border-radius: 50%;
-    box-shadow: inset -5px 0 10px #145214;
-  }
-
-  /* Olho branco */
-  .eye {
-    position: absolute;
-    top: 15px;
-    left: 40px;
-    width: 15px;
-    height: 15px;
-    background: white;
-    border-radius: 50%;
-  }
-
-  /* Pupila preta */
-  .pupil {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 7px;
-    height: 7px;
-    background: black;
-    border-radius: 50%;
-  }
-
-  /* Fogo */
-  .fire {
-    position: absolute;
-    bottom: 90px;
-    left: 170px;
-    width: 30px;
-    height: 60px;
-    opacity: 0;
-    transform-origin: bottom center;
-    animation: fire-breath 3s forwards;
-    filter: drop-shadow(0 0 6px orange);
-  }
-
-  /* Chamas com formas simples */
-  .flame {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 20px;
-    height: 40px;
-    background: radial-gradient(circle at 50% 80%, yellow, orange 60%, red);
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    transform: translateX(-50%);
-    animation: flicker 1.5s infinite alternate;
-  }
-
-  .flame:nth-child(2) {
-    left: 30%;
-    width: 15px;
     height: 30px;
-    animation-delay: 0.2s;
-  }
-  .flame:nth-child(3) {
-    left: 70%;
-    width: 15px;
-    height: 35px;
-    animation-delay: 0.4s;
+    opacity: 0.8;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+    will-change: transform;
   }
 
-  /* Animação de cuspir fogo */
-  @keyframes fire-breath {
-    0% {
-      opacity: 0;
-      transform: scaleY(0.3);
-    }
-    30% {
-      opacity: 1;
-      transform: scaleY(1.2);
-    }
-    70% {
-      opacity: 1;
-      transform: scaleY(1);
-    }
-    100% {
-      opacity: 0;
-      transform: scaleY(0.3);
-    }
-  }
-
-  /* Flicker da chama */
-  @keyframes flicker {
-    0% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 1; }
-    100% { transform: translateX(-50%) scaleY(1.2) scaleX(0.8); opacity: 0.8; }
-  }
-
-  /* Nome Pedro aparecendo depois do fogo */
-  .name {
+  /* Nome Pedro flutuante */
+  #pedro {
     position: absolute;
-    bottom: 20px;
-    right: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-size: 4rem;
+    color: #a0e9ff;
     font-weight: bold;
-    color: #f05454;
-    opacity: 0;
-    text-shadow: 0 0 10px #f05454;
-    animation: name-appear 2s forwards;
-    animation-delay: 3.2s;
+    user-select: none;
+    text-shadow:
+      0 0 5px #a0e9ff,
+      0 0 10px #3ec6ff,
+      0 0 20px #0d94ff;
+    pointer-events: none;
   }
-
-  @keyframes name-appear {
-    to {
-      opacity: 1;
-      text-shadow: 0 0 20px #f05454, 0 0 40px #ff0000;
-    }
-  }
-
 </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="dragon">
-    <div class="body"></div>
-    <div class="head">
-      <div class="eye">
-        <div class="pupil"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="fire">
-    <div class="flame"></div>
-    <div class="flame"></div>
-    <div class="flame"></div>
-  </div>
-
-  <div class="name">Pedro</div>
-</div>
+<div id="fish-container"></div>
+<div id="pedro">Pedro</div>
 
 <script>
-  // Repetir cuspir fogo a cada 5 segundos
-  const fire = document.querySelector('.fire');
-  const name = document.querySelector('.name');
+  const fishContainer = document.getElementById('fish-container');
+  const screenWidth = window.innerWidth;
+  const screenHeight = window.innerHeight;
 
-  function breatheFire() {
-    fire.style.animation = 'none';
-    name.style.opacity = '0';
+  // SVG de peixe simples para usar no innerHTML
+  const fishSVG = `
+  <svg viewBox="0 0 64 32" xmlns="http://www.w3.org/2000/svg" >
+    <g>
+      <ellipse cx="32" cy="16" rx="25" ry="15" fill="#ff8c00" />
+      <polygon points="0,16 15,5 15,27" fill="#e67300" />
+      <circle cx="45" cy="12" r="5" fill="#fff"/>
+      <circle cx="45" cy="12" r="2" fill="#000"/>
+    </g>
+  </svg>`;
 
-    // Forçar reinício da animação
-    void fire.offsetWidth;
+  const fishCount = 20; // número de peixes
 
-    fire.style.animation = 'fire-breath 3s forwards';
-
-    // Aparece o nome após a animação do fogo
-    setTimeout(() => {
-      name.style.animation = 'none';
-      void name.offsetWidth;
-      name.style.animation = 'name-appear 2s forwards';
-    }, 3200);
+  function random(min, max) {
+    return Math.random() * (max - min) + min;
   }
 
-  breatheFire();
-  setInterval(breatheFire, 5000);
+  // Criar peixes
+  for(let i = 0; i < fishCount; i++) {
+    const fish = document.createElement('div');
+    fish.classList.add('fish');
+    fish.innerHTML = fishSVG;
+
+    // tamanho aleatório entre 30 e 80 px de largura
+    const size = random(30, 80);
+    fish.style.width = size + 'px';
+    fish.style.height = (size/2) + 'px';
+
+    // posição vertical aleatória na tela
+    fish.style.top = random(0, screenHeight - size/2) + 'px';
+
+    // posição inicial horizontal (fora da tela esquerda ou direita)
+    const startLeft = Math.random() < 0.5 ? -size : screenWidth + size;
+    fish.style.left = startLeft + 'px';
+
+    // direção (se começar à esquerda vai para direita, se começar direita vai esquerda)
+    fish.dataset.direction = startLeft < 0 ? 'right' : 'left';
+
+    // velocidade entre 20 e 60 segundos para atravessar a tela
+    fish.dataset.speed = random(20000, 60000);
+
+    fishContainer.appendChild(fish);
+  }
+
+  // Animar peixes usando requestAnimationFrame
+  let lastTimestamp = null;
+
+  function animate(timestamp) {
+    if (!lastTimestamp) lastTimestamp = timestamp;
+    const delta = timestamp - lastTimestamp;
+    lastTimestamp = timestamp;
+
+    const fishes = document.querySelectorAll('.fish');
+    fishes.forEach(fish => {
+      let left = parseFloat(fish.style.left);
+      const direction = fish.dataset.direction;
+      const speed = parseFloat(fish.dataset.speed); // tempo para atravessar a tela
+
+      // px por ms: largura da tela + peixe / velocidade em ms
+      const distance = screenWidth + fish.offsetWidth;
+      const pxPerMs = distance / speed;
+      const move = pxPerMs * delta;
+
+      if(direction === 'right') {
+        left += move;
+        if(left > screenWidth + fish.offsetWidth) {
+          // Resetar para começar do lado esquerdo
+          left = -fish.offsetWidth;
+          fish.style.top = random(0, screenHeight - fish.offsetHeight) + 'px';
+          fish.dataset.speed = random(20000, 60000);
+        }
+      } else {
+        left -= move;
+        if(left < -fish.offsetWidth) {
+          // Resetar para começar do lado direito
+          left = screenWidth + fish.offsetWidth;
+          fish.style.top = random(0, screenHeight - fish.offsetHeight) + 'px';
+          fish.dataset.speed = random(20000, 60000);
+        }
+      }
+
+      fish.style.left = left + 'px';
+
+      // Virar horizontalmente o peixe se necessário
+      fish.style.transform = direction === 'right' ? 'scaleX(1)' : 'scaleX(-1)';
+    });
+
+    // Animar o nome Pedro flutuando suavemente
+    animatePedro(timestamp);
+
+    requestAnimationFrame(animate);
+  }
+
+  // Para flutuar o nome "Pedro" suavemente
+  const pedro = document.getElementById('pedro');
+  let pedroBaseX = screenWidth / 2;
+  let pedroBaseY = screenHeight / 2;
+  let pedroOffsetX = 0;
+  let pedroOffsetY = 0;
+  let pedroAngle = 0;
+
+  function animatePedro(timestamp) {
+    pedroAngle += 0.005;
+    pedroOffsetX = Math.sin(pedroAngle) * 30; // +/-30px horizontal
+    pedroOffsetY = Math.cos(pedroAngle * 1.2) * 20; // +/-20px vertical
+
+    pedro.style.left = (pedroBaseX + pedroOffsetX) + 'px';
+    pedro.style.top = (pedroBaseY + pedroOffsetY) + 'px';
+  }
+
+  requestAnimationFrame(animate);
+
+  // Atualizar variáveis se a janela for redimensionada
+  window.addEventListener('resize', () => {
+    pedroBaseX = window.innerWidth / 2;
+    pedroBaseY = window.innerHeight / 2;
+  });
 </script>
 
 </body>
