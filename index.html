@@ -54,12 +54,85 @@
       0 0 20px #0d94ff;
     pointer-events: none;
   }
+
+  /* Caixa de mensagem (formulário) */
+  #message-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    width: 320px;
+    z-index: 10;
+    pointer-events: auto; /* habilitar interação */
+  }
+
+  #message-box h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: #004466;
+    text-align: center;
+  }
+
+  #message-box textarea {
+    width: 100%;
+    height: 100px;
+    resize: none;
+    border-radius: 8px;
+    border: 1px solid #004466;
+    padding: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+  }
+
+  #message-box button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007acc;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  #message-box button:hover {
+    background-color: #005fa3;
+  }
+
+  /* Mensagem de sucesso */
+  #success-message {
+    display: none;
+    text-align: center;
+    color: #006600;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+
 </style>
 </head>
 <body>
 
 <div id="fish-container"></div>
 <div id="pedro">Pedro</div>
+
+<!-- Formulário para enviar mensagem -->
+<div id="message-box">
+  <h2>Mande uma mensagem ao Pedro</h2>
+  <form id="contact-form" method="POST" action="https://formspree.io/f/movknwne">
+    <textarea name="message" placeholder="Escreva sua mensagem aqui..." required></textarea>
+    <button type="submit">Enviar</button>
+  </form>
+  <div id="success-message">Mensagem enviada com sucesso!</div>
+</div>
 
 <script>
   const fishContainer = document.getElementById('fish-container');
@@ -183,6 +256,36 @@
     pedroBaseX = window.innerWidth / 2;
     pedroBaseY = window.innerHeight / 2;
   });
+
+  // Lógica para enviar formulário usando Formspree
+  const form = document.getElementById('contact-form');
+  const successMessage = document.getElementById('success-message');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        successMessage.style.display = 'block';
+        form.reset();
+      } else {
+        alert('Erro ao enviar mensagem. Tente novamente mais tarde.');
+      }
+    } catch (error) {
+      alert('Erro ao enviar mensagem. Tente novamente mais tarde.');
+    }
+  });
+
 </script>
 
 </body>
